@@ -111,7 +111,17 @@ func BuildBalancedBST(values []int) *BST {
 	sort.Ints(values)
 	middle := len(values) / 2
 	root := NewBST(values[middle])
-	root.Left = BuildBalancedBST(values[:middle-1])
+	root.Left = BuildBalancedBST(values[:middle])
 	root.Right = BuildBalancedBST(values[middle+1:])
 	return root
+}
+
+
+func InOrder(bst *BST, values *[]int) {
+	if bst == nil {
+		return
+	}
+	InOrder(bst.Left, values)
+	*values = append(*values, bst.Value)
+	InOrder(bst.Right, values)
 }
