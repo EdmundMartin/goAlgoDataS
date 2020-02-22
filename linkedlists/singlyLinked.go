@@ -1,55 +1,95 @@
 package linkedlists
 
-type SinglyLinkedNode struct {
+type Node struct {
 	Value int
-	Next *SinglyLinkedNode
+	Next *Node
 }
 
-func NewSinglyLinkedNode(value int)  *SinglyLinkedNode {
-	return &SinglyLinkedNode{Value: value}
+func NewNode(value int) *Node {
+	return &Node{Value:value}
 }
 
-// AddFront adds a value to front of linked list and returns the head node of singly linked list
-func AddFront(head *SinglyLinkedNode, value int) *SinglyLinkedNode {
-	if head == nil {
-		return NewSinglyLinkedNode(value)
+type SinglyLinkedList struct {
+	Head *Node
+	Tail *Node
+}
+
+func NewSinglyLinkedList() *SinglyLinkedList {
+	return &SinglyLinkedList{nil, nil}
+}
+
+func (s *SinglyLinkedList) AddFront(value int) {
+	if s.Head == nil {
+		node := NewNode(value)
+		s.Head = node
+		s.Tail = node
+	} else {
+		head := NewNode(value)
+		head.Next = s.Head
+		s.Head = head
 	}
-	newNode := NewSinglyLinkedNode(value)
-	newNode.Next = head
-	return newNode
 }
 
-// AddBack adds a value to the back of a linked list and returns the head of the signly linked list
-func AddBack(head *SinglyLinkedNode, value int)  {
-	// Edge case
-	if head == nil {
+func (s *SinglyLinkedList) AddBack(value int) {
+	if s.Tail == nil {
+		node := NewNode(value)
+		s.Head = node
+		s.Tail = node
+	} else {
+		tail := s.Tail
+		newNode := NewNode(value)
+		tail.Next = newNode
+		s.Tail = newNode
+	}
+}
+
+func (s *SinglyLinkedList) Remove(node *Node) {
+	if node == s.Head {
+		s.Head = s.Head.Next
 		return
 	}
-	current := head
-	for current.Next != nil {
-		current = current.Next
-	}
-	current.Next = NewSinglyLinkedNode(value)
-}
-
-// RemoveNode and tell caller whether the node has been successfully removed
-func RemoveNode(head *SinglyLinkedNode, node *SinglyLinkedNode) bool {
-	if head == nil {
-		return false
-	}
-	if head == node {
-		head = head.Next
-		return true
-	}
-	var prev *SinglyLinkedNode
-	current := head
+	var prev *Node
+	current := s.Head
 	for current != nil {
 		if current == node && prev != nil {
 			prev.Next = current.Next
-			return true
+			if current == s.Tail {
+				s.Tail = prev
+			}
 		}
 		prev = current
 		current = current.Next
 	}
-	return false
+}
+
+func (s *SinglyLinkedList) IterateValues() []int {
+	values := []int{}
+	current := s.Head
+	for current != nil {
+		values = append(values, current.Value)
+		current = current.Next
+	}
+	return values
+}
+
+func (s *SinglyLinkedList) NodeAtIdx(idx int) *Node {
+	currentIdx := 0
+	current := s.Head
+	for current != nil && currentIdx <= idx {
+		if currentIdx == idx {
+			return current
+		}
+		current = current.Next
+		currentIdx++
+	}
+	return nil
+}
+
+
+func SliceToSLL(slice []int) *SinglyLinkedList {
+	ll := NewSinglyLinkedList()
+	for _, val := range slice {
+		ll.AddBack(val)
+	}
+	return ll
 }
