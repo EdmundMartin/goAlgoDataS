@@ -125,3 +125,21 @@ func InOrder(bst *BST, values *[]int) {
 	*values = append(*values, bst.Value)
 	InOrder(bst.Right, values)
 }
+
+func PreOrder(bst *BST, values *[]int) {
+	if bst == nil {
+		return
+	}
+	*values = append(*values, bst.Value)
+	PreOrder(bst.Left, values)
+	PreOrder(bst.Right, values)
+}
+
+func PostOrder(bst *BST, values *[]int) {
+	if bst == nil {
+		return
+	}
+	PostOrder(bst.Left, values)
+	PostOrder(bst.Right, values)
+	*values = append(*values, bst.Value)
+}
